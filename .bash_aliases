@@ -1,4 +1,4 @@
-_ENV_PATH="/etc/profiles/aliases/"
+_ENV_PATH="/opt/profiles/aliases/"
 _ENV_FILES="${_ENV_PATH}*.env"
 # List these alias Commands, this file...
 commands() {
