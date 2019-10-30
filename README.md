@@ -2,9 +2,11 @@
 Bash Aliases
 
 # INSTALL:
-Download from guthub to /opt/profiles and extract there...
+Download from guthub to /home/$USER/profiles and extract there...
 
-Next: cd into this folder: /opt/profiles
+Then: sudo mv /home/$USER/profiles/ /opt/
+
+Next: goto this folder: cd /opt/profiles
 
 Now, as a non-Root USER from a console: ./install.sh
 
