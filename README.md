@@ -2,7 +2,7 @@
 Bash Aliases
 
 # INSTALL:
-Download from guthub to /home/$USER/profiles and extract there...via the following git clone command:
+Download from github to /home/$USER/profiles and extract there...via the following git clone command:
 
 cd ~
 
