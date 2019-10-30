@@ -2,7 +2,11 @@
 Bash Aliases
 
 # INSTALL:
-Download from guthub to /home/$USER/profiles and extract there...
+Download from guthub to /home/$USER/profiles and extract there...via the following git clone command:
+
+cd ~
+
+git clone https://github.com/Bob-586/profiles.git
 
 Then: sudo mv /home/$USER/profiles/ /opt/
 
