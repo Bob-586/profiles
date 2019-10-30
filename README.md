@@ -8,7 +8,7 @@ cd ~
 
 git clone https://github.com/Bob-586/profiles.git
 
-Then: sudo mv /home/$USER/profiles/ /opt/
+Then: sudo mv profiles/ /opt/
 
 Next: goto this folder: cd /opt/profiles
 
