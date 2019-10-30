@@ -4,13 +4,19 @@ Bash Aliases
 # INSTALL:
 Download from guthub to /opt/profiles and extract there...
 
-# First Backup any changes to these files:
+Next: cd into this folder: /opt/profiles
 
-rm /home/$USER/.bash_aliases
+Now, as a non-Root USER from a console: ./install.sh
 
-rm /home/$USER/.bashrc
+# If not using the install.sh installer follow these steps:
 
-rm /home/$USER/.profile
+# First Backup any changes to these files, then remove them:
+
+mv /home/$USER/.bash_aliases /home/$USER/.old_bash_aliases
+
+mv /home/$USER/.bashrc /home/$USER/.old_bashrc
+
+mv /home/$USER/.profile /home/$USER/.old_profile
 
 # Make links to Bash Aliases:
 
