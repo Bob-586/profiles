@@ -79,6 +79,15 @@ LIGHT_GREEN="\[\033[1;32m\]"
  LIGHT_GRAY="\[\033[0;37m\]"
  COLOR_NONE="\[\e[0m\]"
  
+function is_font_installed() {
+	# sudo apt-get install fonts-powerline
+	if [ -f "/etc/.powerline_font" ]; then
+		return 0
+	else
+		return 1
+	fi		
+}
+ 
 __git_info() {
         # no .git directory
     	[ -d .git ] || return
@@ -99,6 +108,11 @@ __git_info() {
         behindN="$(echo "$stats" | grep -o 'behind \d\+' | grep -o '\d\+')"
         [ -n "$aheadN" ] && marks+=" $GIT_NEED_PUSH_SYMBOL$aheadN"
         [ -n "$behindN" ] && marks+=" $GIT_NEED_PULL_SYMBOL$behindN"
+
+		if ! is_font_installed; then
+			printf "%s" "$branch$marks $FG_COLOR9"
+		   return 
+		fi   
 
         # print the git branch segment without a trailing newline
         # branch is modified?
@@ -152,7 +166,9 @@ function set_git_branch {
   # Set the final branch string.
   BRANCH="${state}(${branch})${COLOR_NONE} ${remote}"
   BRANCH+="$(__git_info)"
-  BRANCH+="$BG_EXIT$RESET"
+  if is_font_installed; then
+	BRANCH+="$BG_EXIT$RESET"
+  fi	
 }
 
  
@@ -180,10 +196,13 @@ function set_bash_prompt () {
   fi
 
   # Set the bash prompt variable.  
-  PS1="${LIGHT_GREEN}\u@\h${FG_COLOR1}${PS_SYMBOL}"
-  PS1+="$BG_COLOR5\\w"
-  PS1+="$RESET${FG_COLOR6}"
-  PS1+="$BG_EXIT$RESET"
+  PS1="${LIGHT_GREEN}\u@\h${FG_COLOR1}"
+  if is_font_installed; then
+	PS1+="${PS_SYMBOL}"
+	PS1+="$BG_COLOR5\\w"
+	PS1+="$RESET${FG_COLOR6}"
+	PS1+="$BG_EXIT$RESET"
+  fi	
   PS1+="${WHITE} ${BRANCH} ${PROMPT_SYMBOL} ${COLOR_NONE}"
 }
  
