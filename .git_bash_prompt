@@ -1,0 +1,191 @@
+#   Set the bash prompt according to:
+#    * the branch/status of the current git repository
+#    * the branch of the current subversion repository
+#    * the return value of the previous command
+# 	AUTHOR: Scott Woods <scott@westarete.com> West Arete Computing
+#   Based on work by halbtuerke and lakiolen.
+#   http://gist.github.com/31967
+  
+# The various escape codes that we can use to color our prompt.
+
+# Unicode symbols https://github.com/pjmp/fancy-linux-prompt/blob/master/fancy-prompt.sh
+     GIT_BRANCH_CHANGED_SYMBOL='+ changed'
+     GIT_NEED_PULL_SYMBOL='⇣ do pull'
+     GIT_NEED_PUSH_SYMBOL='⇡ needs push'
+     PS_SYMBOL='🐧'
+
+    # Solarized colorscheme
+     BG_BASE00="\\[$(tput setab 11)\\]"
+     BG_BASE01="\\[$(tput setab 10)\\]"
+     BG_BASE02="\\[$(tput setab 0)\\]"
+     BG_BASE03="\\[$(tput setab 8)\\]"
+     BG_BASE0="\\[$(tput setab 12)\\]"
+     BG_BASE1="\\[$(tput setab 14)\\]"
+     BG_BASE2="\\[$(tput setab 7)\\]"
+     BG_BASE3="\\[$(tput setab 15)\\]"
+     BG_BLUE="\\[$(tput setab 4)\\]"
+     BG_COLOR1="\\[\\e[48;5;240m\\]"
+     BG_COLOR2="\\[\\e[48;5;238m\\]"
+     BG_COLOR3="\\[\\e[48;5;238m\\]"
+     BG_COLOR4="\\[\\e[48;5;31m\\]"
+     BG_COLOR5="\\[\\e[48;5;31m\\]"
+     BG_COLOR6="\\[\\e[48;5;237m\\]"
+     BG_COLOR7="\\[\\e[48;5;237m\\]"
+     BG_COLOR8="\\[\\e[48;5;161m\\]"
+     BG_COLOR9="\\[\\e[48;5;161m\\]"
+     BG_CYAN="\\[$(tput setab 6)\\]"
+     BG_GREEN="\\[$(tput setab 2)\\]"
+     BG_MAGENTA="\\[$(tput setab 5)\\]"
+     BG_ORANGE="\\[$(tput setab 9)\\]"
+     BG_RED="\\[$(tput setab 1)\\]"
+     BG_VIOLET="\\[$(tput setab 13)\\]"
+     BG_YELLOW="\\[$(tput setab 3)\\]"
+     BOLD="\\[$(tput bold)\\]"
+     DIM="\\[$(tput dim)\\]"
+     FG_BASE00="\\[$(tput setaf 11)\\]"
+     FG_BASE01="\\[$(tput setaf 10)\\]"
+     FG_BASE02="\\[$(tput setaf 0)\\]"
+     FG_BASE03="\\[$(tput setaf 8)\\]"
+     FG_BASE0="\\[$(tput setaf 12)\\]"
+     FG_BASE1="\\[$(tput setaf 14)\\]"
+     FG_BASE2="\\[$(tput setaf 7)\\]"
+     FG_BASE3="\\[$(tput setaf 15)\\]"
+     FG_BLUE="\\[$(tput setaf 4)\\]"
+     FG_COLOR1="\\[\\e[38;5;250m\\]"
+     FG_COLOR2="\\[\\e[38;5;240m\\]"
+     FG_COLOR3="\\[\\e[38;5;250m\\]"
+     FG_COLOR4="\\[\\e[38;5;238m\\]"
+     FG_COLOR6="\\[\\e[38;5;31m\\]"
+     FG_COLOR7="\\[\\e[38;5;250m\\]"
+     FG_COLOR8="\\[\\e[38;5;237m\\]"
+     FG_COLOR9="\\[\\e[38;5;161m\\]"
+     FG_CYAN="\\[$(tput setaf 6)\\]"
+     FG_GREEN="\\[$(tput setaf 2)\\]"
+     FG_MAGENTA="\\[$(tput setaf 5)\\]"
+     FG_ORANGE="\\[$(tput setaf 9)\\]"
+     FG_RED="\\[$(tput setaf 1)\\]"
+     FG_VIOLET="\\[$(tput setaf 13)\\]"
+     FG_YELLOW="\\[$(tput setaf 3)\\]"
+     RESET="\\[$(tput sgr0)\\]"
+     REVERSE="\\[$(tput rev)\\]"
+
+        RED="\[\033[0;31m\]"
+     YELLOW="\[\033[0;33m\]"
+      GREEN="\[\033[0;32m\]"
+       BLUE="\[\033[0;34m\]"
+  LIGHT_RED="\[\033[1;31m\]"
+LIGHT_GREEN="\[\033[1;32m\]"
+      WHITE="\[\033[1;37m\]"
+ LIGHT_GRAY="\[\033[0;37m\]"
+ COLOR_NONE="\[\e[0m\]"
+ 
+__git_info() {
+        # no .git directory
+    	[ -d .git ] || return
+
+        local aheadN
+        local behindN
+        local branch
+        local marks
+        local stats
+
+        # get current branch name or short SHA1 hash for detached head
+        branch="$(git symbolic-ref --short HEAD 2>/dev/null || git describe --tags --always 2>/dev/null)"
+        [ -n "$branch" ] || return  # git branch not found
+
+        # how many commits local branch is ahead/behind of remote?
+        stats="$(git status --porcelain --branch | grep '^##' | grep -o '\[.\+\]$')"
+        aheadN="$(echo "$stats" | grep -o 'ahead \d\+' | grep -o '\d\+')"
+        behindN="$(echo "$stats" | grep -o 'behind \d\+' | grep -o '\d\+')"
+        [ -n "$aheadN" ] && marks+=" $GIT_NEED_PUSH_SYMBOL$aheadN"
+        [ -n "$behindN" ] && marks+=" $GIT_NEED_PULL_SYMBOL$behindN"
+
+        # print the git branch segment without a trailing newline
+        # branch is modified?
+        if [ -n "$(git status --porcelain)" ]; then
+            printf "%s" "${BG_COLOR8}$RESET$BG_COLOR8 $branch$marks $FG_COLOR9"
+        else
+            printf "%s" "${BG_BLUE}$RESET$BG_BLUE $branch$marks $RESET$FG_BLUE"
+        fi
+    } 
+ 
+# Detect whether the current directory is a git repository.
+function is_git_repository {
+  git branch > /dev/null 2>&1
+}
+ 
+# Determine the branch/state information for this git repository.
+function set_git_branch {
+  # Capture the output of the "git status" command.
+  git_status="$(git status 2> /dev/null)"
+ 
+  # Set color based on clean/staged/dirty.
+  if [[ ${git_status} =~ "working directory clean" ]]; then
+    state="${GREEN}"
+  elif [[ ${git_status} =~ "Changes to be committed" ]]; then
+    state="${YELLOW}"
+  else
+    state="${RED}"
+  fi
+  
+  # Set arrow icon based on status against remote.
+  remote_pattern="# Your branch is (.*) of"
+  if [[ ${git_status} =~ ${remote_pattern} ]]; then
+    if [[ ${BASH_REMATCH[1]} == "ahead" ]]; then
+      remote="↑ needs push"
+    else
+      remote="↓ do pull"
+    fi
+  else
+    remote=""
+  fi
+  diverge_pattern="# Your branch and (.*) have diverged"
+  if [[ ${git_status} =~ ${diverge_pattern} ]]; then
+    remote="↕ changed"
+  fi
+  
+  # Get the name of the branch.
+  branch_pattern="^# On branch ([^${IFS}]*)"    
+  if [[ ${git_status} =~ ${branch_pattern} ]]; then
+    branch=${BASH_REMATCH[1]}
+  fi
+  # Set the final branch string.
+  BRANCH="${state}(${branch})${COLOR_NONE} ${remote}"
+  BRANCH+="$(__git_info)"
+  BRANCH+="$BG_EXIT$RESET"
+}
+
+ 
+# Return the prompt symbol to use, colorized based on the return value of the
+# previous command.
+function set_prompt_symbol () {
+  if test $1 -eq 0 ; then
+      PROMPT_SYMBOL="\$"
+  else
+      PROMPT_SYMBOL="${RED}\$${COLOR_NONE}"
+  fi
+}
+ 
+# Set the full bash prompt.
+function set_bash_prompt () {
+  # Set the PROMPT_SYMBOL variable. We do this first so we don't lose the 
+  # return value of the last command.
+  set_prompt_symbol $?
+ 
+  # Set the BRANCH variable.
+  if is_git_repository ; then
+    set_git_branch
+  else
+    BRANCH=''
+  fi
+
+  # Set the bash prompt variable.  
+  PS1="${LIGHT_GREEN}\u@\h${FG_COLOR1}${PS_SYMBOL}"
+  PS1+="$BG_COLOR5\\w"
+  PS1+="$RESET${FG_COLOR6}"
+  PS1+="$BG_EXIT$RESET"
+  PS1+="${WHITE} ${BRANCH} ${PROMPT_SYMBOL} ${COLOR_NONE}"
+}
+ 
+# Tell bash to execute this function just before displaying its prompt.
+PROMPT_COMMAND=set_bash_prompt
