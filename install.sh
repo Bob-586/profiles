@@ -12,22 +12,22 @@ fi
 if [ -f /home/$USER/.profile ]; then
 	mv /home/$USER/.profile /home/$USER/.old_profile
 fi
-if [ -f /home/$USER/.git_svn_bash_prompt ]; then 
-	mv /home/$USER/.git_svn_bash_prompt /home/$USER/.old_git_svn_bash_prompt
+if [ -f /home/$USER/.git_bash_prompt ]; then 
+	mv /home/$USER/.git_bash_prompt /home/$USER/.old_git_bash_prompt
 fi
 if ([ -d aliases ] && [ -f .bash_aliases ]); then
 	echo "Making Sym Links from current install location"
 	ln -s "$(pwd -P)"/.bash_aliases /home/$USER/
 	ln -s "$(pwd -P)"/.bashrc /home/$USER/
 	ln -s "$(pwd -P)"/.profile /home/$USER/
-	ln -s "$(pwd -P)"/.git_svn_bash_prompt /home/$USER/
+	ln -s "$(pwd -P)"/.git_bash_prompt /home/$USER/
 else
   if ([ -d /opt/profiles/aliases ] && [ -f /opt/profiles/.bash_aliases ]); then
     echo "Making Sym Links from /opt/profiles install location"
 	ln -s /opt/profiles/.bash_aliases /home/$USER/
 	ln -s /opt/profiles/.bashrc /home/$USER/
 	ln -s /opt/profiles/.profile /home/$USER/
-	ln -s /opt/profiles/.git_svn_bash_prompt /home/$USER/
+	ln -s /opt/profiles/.git_bash_prompt /home/$USER/
   fi
 fi
 echo -e "\n"

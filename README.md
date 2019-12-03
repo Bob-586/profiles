@@ -32,7 +32,7 @@ ln -s /opt/profiles/.bashrc /home/$USER/
 
 ln -s /opt/profiles/.profile /home/$USER/
 
-ln -s /opt/profiles/.git_svn_bash_prompt /home/$USER/
+ln -s /opt/profiles/.git_bash_prompt /home/$USER/
 
 exit && relog in... for changes to take effect
 
