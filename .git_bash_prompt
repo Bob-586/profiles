@@ -198,14 +198,14 @@ function set_bash_prompt () {
   # Set the bash prompt variable.  
   PS1="${LIGHT_GREEN}\u@\h${FG_COLOR1}"
   if is_font_installed; then
+    WD="$BG_COLOR5\\w"
+    WD+="${RESET}${COLOR_NONE}${BLUE}${RESET}${COLOR_NONE}"
 	PS1+="${PS_SYMBOL}"
-	PS1+="$BG_COLOR5\\w"
 	PS1+="$RESET${FG_COLOR6}"
-	PS1+="$BG_EXIT$RESET"
   else
-        PS1+=" \\w"
+    WD="\\w"
   fi	
-  PS1+="${WHITE} ${BRANCH} ${PROMPT_SYMBOL} ${COLOR_NONE}"
+  PS1+="${WHITE} ${BRANCH} ${WD} ${PROMPT_SYMBOL} ${COLOR_NONE}"
 }
  
 # Tell bash to execute this function just before displaying its prompt.
