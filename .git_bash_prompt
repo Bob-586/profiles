@@ -202,6 +202,8 @@ function set_bash_prompt () {
 	PS1+="$BG_COLOR5\\w"
 	PS1+="$RESET${FG_COLOR6}"
 	PS1+="$BG_EXIT$RESET"
+  else
+        PS1+=" \\w"
   fi	
   PS1+="${WHITE} ${BRANCH} ${PROMPT_SYMBOL} ${COLOR_NONE}"
 }
