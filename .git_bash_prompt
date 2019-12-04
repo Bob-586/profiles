@@ -181,7 +181,7 @@ function set_bash_prompt () {
   # Set the bash prompt variable.  
   
   if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
-    UPC="${RED}SSH:"
+    UPC="${RED}SSH:${WHITE}"
   else
 	UPC="Local:"	
   fi
