@@ -16,9 +16,7 @@ Now, as a non-Root USER from a console: ./install.sh
 
 # Ubuntu Font for Cool Term, do not do on Windows linux-subsystem:
 sudo apt-get install fonts-powerline
-sudo touch /etc/.powerline_font
-
-
+sudo touch /opt/profiles/.powerline_font
 
 # If not using the install.sh installer follow these steps:
 

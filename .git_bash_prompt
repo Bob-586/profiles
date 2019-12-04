@@ -1,3 +1,4 @@
+PROFILE_PATH=/opt/profiles
 #   Set the bash prompt according to:
 #    * the branch/status of the current git repository
 #    * the return value of the previous command
@@ -53,7 +54,7 @@ LIGHT_GREEN="\[\033[1;32m\]"
  
 function is_font_installed() {
 	# sudo apt-get install fonts-powerline
-	if [ -f "/etc/.powerline_font" ]; then
+	if [ -f "$PROFILE_PATH/.powerline_font" ]; then
 		return 0
 	else
 		return 1
@@ -172,18 +173,23 @@ function set_bash_prompt () {
   # Set the bash prompt variable.  
   
   if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
-    UPC="SSH into REMOTE:"
+    UPC="SSH:"
   else
-	UPC="Local on::"	
+	UPC="Local:"	
   fi
   UPC+="\u@\h"
-  if is_font_installed; then
-    PS1="${BK_GREEN}$WHITE$UPC${GREEN}${SEGMENT_SEPARATOR}"
-    WD="$WHITE$BK_BLUE\\w${COLOR_NONE}${BLUE}${SEGMENT_SEPARATOR}${WHITE}"
-	PS1+="${WHITE}${BRANCH}${WD}$PS_SYMBOL${PROMPT_SYMBOL} "
-  else
-    WD="$BLUE\\w${COLOR_NONE}${WHITE}"
-    PS1="$CYAN*$UPC* ${WHITE}${BRANCH} ${WD} ${PROMPT_SYMBOL} "
+  
+  if [ -f "$PROFILE_PATH/theme" ]; then
+	source "$PROFILE_PATH/theme"
+  else 
+	if is_font_installed; then
+		PS1="${BK_GREEN}$WHITE$UPC${GREEN}${SEGMENT_SEPARATOR}"
+		WD="$WHITE$BK_BLUE\\w${COLOR_NONE}${BLUE}${SEGMENT_SEPARATOR}${WHITE}"
+		PS1+="${WHITE}${BRANCH}${WD}$PS_SYMBOL${PROMPT_SYMBOL} "
+	else
+		WD="\\w${COLOR_NONE}${WHITE}"
+		PS1="$CYAN*$UPC* ${WHITE}${BRANCH} ${WD} ${PROMPT_SYMBOL} "
+	fi	
   fi	
 }
  
