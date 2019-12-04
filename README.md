@@ -16,9 +16,12 @@ Now, as a non-Root USER from a console: ./install.sh
 
 # Ubuntu Font for Cool Term, do not do on Windows linux-subsystem:
 sudo apt-get install fonts-powerline
-sudo touch /opt/profiles/.powerline_font
+touch /opt/profiles/.unicode_support
 
-# If not using the install.sh installer follow these steps:
+# (Optional) To disable Background colors:
+touch /opt/profiles/.simple_theme
+
+# If NOT using the install.sh installer follow these steps:
 
 # First Backup any changes to these files, then remove them:
 
