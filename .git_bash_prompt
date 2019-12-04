@@ -170,7 +170,13 @@ function set_bash_prompt () {
   fi
 
   # Set the bash prompt variable.  
-  UPC="\u@\h"
+  
+  if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
+    UPC="SSH into REMOTE:"
+  else
+	UPC="Local on::"	
+  fi
+  UPC+="\u@\h"
   if is_font_installed; then
     PS1="${BK_GREEN}$WHITE$UPC${GREEN}${SEGMENT_SEPARATOR}"
     WD="$WHITE$BK_BLUE\\w${COLOR_NONE}${BLUE}${SEGMENT_SEPARATOR}${WHITE}"
