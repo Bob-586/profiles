@@ -12,9 +12,6 @@ PROFILE_PATH=/opt/profiles
      GIT_BRANCH_CHANGED_SYMBOL='+ changed'
      GIT_NEED_PULL_SYMBOL='⇣ do pull'
      GIT_NEED_PUSH_SYMBOL='⇡ needs push'
-     PS_SYMBOL='🐧'
-     SEGMENT_SEPARATOR=$'\ue0b0'
-     PL_BRANCH_CHAR=$'\ue0a0'         # 
     
      BOLD="\\[$(tput bold)\\]"
      DIM="\\[$(tput dim)\\]"
@@ -51,13 +48,24 @@ LIGHT_GREEN="\[\033[1;32m\]"
  
  COLOR_NONE="\[\e[0m\]"
  COLOR_DEFAULT="\[\e[39m\]"
- 
-function is_font_installed() {
+
+function is_normal_theme() {
 	# sudo apt-get install fonts-powerline
-	if [ -f "$PROFILE_PATH/.powerline_font" ]; then
-		return 0
+	
+	if [ -f "$PROFILE_PATH/.unicode_support" ]; then
+     PS_SYMBOL='🐧'
+     SEGMENT_SEPARATOR=$'\ue0b0'
+     PL_BRANCH_CHAR=$'\ue0a0'         # 
 	else
+     PS_SYMBOL=''
+     SEGMENT_SEPARATOR='>'
+     PL_BRANCH_CHAR=''
+	fi		
+		
+	if [ -f "$PROFILE_PATH/.simple_theme" ]; then
 		return 1
+	else
+		return 0
 	fi		
 }
  
@@ -82,7 +90,7 @@ __git_info() {
         [ -n "$aheadN" ] && marks+=" $GIT_NEED_PUSH_SYMBOL$aheadN"
         [ -n "$behindN" ] && marks+=" $GIT_NEED_PULL_SYMBOL$behindN"
 
-		if ! is_font_installed; then
+		if ! is_normal_theme; then
 			printf "%s" "$state[$branch]$WHITE$marks"
 		   return 
 		fi   
@@ -136,7 +144,7 @@ function set_git_branch {
   
   BRANCH="${state}(git)${COLOR_NONE}${remote} "
   BRANCH+="$(__git_info bk)"
-  if is_font_installed; then
+  if is_normal_theme; then
 	BRANCH+="$BK_EXIT${SEGMENT_SEPARATOR}$RESET"
   fi	
 }
@@ -145,7 +153,7 @@ function set_git_branch {
 # Return the prompt symbol to use, colorized based on the return value of the
 # previous command.
 function set_prompt_symbol () {
-  if is_font_installed; then
+  if is_normal_theme; then
 	 ERRX="✘"
   else 
   	 ERRX="Opps!"
@@ -182,7 +190,7 @@ function set_bash_prompt () {
   if [ -f "$PROFILE_PATH/theme" ]; then
 	source "$PROFILE_PATH/theme"
   else 
-	if is_font_installed; then
+	if is_normal_theme; then
 		PS1="${BK_GREEN}$WHITE$UPC${GREEN}${SEGMENT_SEPARATOR}"
 		WD="$WHITE$BK_BLUE\\w${COLOR_NONE}${BLUE}${SEGMENT_SEPARATOR}${WHITE}"
 		PS1+="${WHITE}${BRANCH}${WD}$PS_SYMBOL${PROMPT_SYMBOL} "
