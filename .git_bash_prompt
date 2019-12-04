@@ -58,7 +58,7 @@ function is_normal_theme() {
      PL_BRANCH_CHAR=$'\ue0a0'         # 
 	else
      PS_SYMBOL=''
-     SEGMENT_SEPARATOR='>'
+     SEGMENT_SEPARATOR=' -> '
      PL_BRANCH_CHAR=''
 	fi		
 		
