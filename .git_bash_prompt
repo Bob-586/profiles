@@ -188,7 +188,7 @@ function set_bash_prompt () {
 		PS1+="${WHITE}${BRANCH}${WD}$PS_SYMBOL${PROMPT_SYMBOL} "
 	else
 		WD="\\w${COLOR_NONE}${WHITE}"
-		PS1="$CYAN*$UPC* ${WHITE}${BRANCH} ${WD} ${PROMPT_SYMBOL} "
+		PS1="$CYAN$UPC ${WHITE}${BRANCH} ${WD} ${PROMPT_SYMBOL} "
 	fi	
   fi	
 }
