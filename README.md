@@ -14,6 +14,12 @@ Next: goto this folder: cd /opt/profiles
 
 Now, as a non-Root USER from a console: ./install.sh
 
+# Ubuntu Font for Cool Term, do not do on Windows linux-subsystem:
+sudo apt-get install fonts-powerline
+sudo touch /etc/.powerline_font
+
+
+
 # If not using the install.sh installer follow these steps:
 
 # First Backup any changes to these files, then remove them:

@@ -1,14 +1,13 @@
 #   Set the bash prompt according to:
 #    * the branch/status of the current git repository
-#    * the branch of the current subversion repository
 #    * the return value of the previous command
 # 	AUTHOR: Scott Woods <scott@westarete.com> West Arete Computing
 #   Based on work by halbtuerke and lakiolen.
 #   http://gist.github.com/31967
-  
-# The various escape codes that we can use to color our prompt.
 
 # Unicode symbols https://github.com/pjmp/fancy-linux-prompt/blob/master/fancy-prompt.sh
+# The various escape codes that we can use to color our prompt.
+# Glued together by Robert Strutts -> https://github.com/Bob-586/profiles
      GIT_BRANCH_CHANGED_SYMBOL='+ changed'
      GIT_NEED_PULL_SYMBOL='⇣ do pull'
      GIT_NEED_PUSH_SYMBOL='⇡ needs push'
@@ -83,16 +82,16 @@ __git_info() {
         [ -n "$behindN" ] && marks+=" $GIT_NEED_PULL_SYMBOL$behindN"
 
 		if ! is_font_installed; then
-			printf "%s" "$branch$marks$BLUE"
+			printf "%s" "$state[$branch]$WHITE$marks"
 		   return 
 		fi   
 
         # print the git branch segment without a trailing newline
         # branch is modified?
         if [ -n "$(git status --porcelain)" ]; then
-            printf "%s" "$RESET$bk$WHITE$branch$marks$WHITE"
+            printf "%s" "$RESET$bk$WHITE[$branch]$marks$state"
         else
-            printf "%s" "$RESET$bk$WHITE$branch$marks$RESET$WHITE"
+            printf "%s" "$RESET$bk$WHITE[$branch]$marks$RESET$state"
         fi
     } 
  
@@ -134,13 +133,7 @@ function set_git_branch {
     remote="↕ changed"
   fi
   
-  # Get the name of the branch.
-  branch_pattern="^# On branch ([^${IFS}]*)"    
-  if [[ ${git_status} =~ ${branch_pattern} ]]; then
-    branch=${BASH_REMATCH[1]}
-  fi
-  # Set the final branch string.
-  BRANCH="${state}git:(${branch})${COLOR_NONE}${remote} "
+  BRANCH="${state}(git)${COLOR_NONE}${remote} "
   BRANCH+="$(__git_info bk)"
   if is_font_installed; then
 	BRANCH+="$BK_EXIT${SEGMENT_SEPARATOR}$RESET"
@@ -151,10 +144,15 @@ function set_git_branch {
 # Return the prompt symbol to use, colorized based on the return value of the
 # previous command.
 function set_prompt_symbol () {
+  if is_font_installed; then
+	 ERRX="✘"
+  else 
+  	 ERRX="Opps!"
+  fi	
   if test $1 -eq 0 ; then
       PROMPT_SYMBOL="\$${COLOR_NONE}"
   else
-      PROMPT_SYMBOL="${RED}\$${COLOR_NONE}"
+      PROMPT_SYMBOL="${RED}${ERRX} \$${COLOR_NONE}"
   fi
 }
  
@@ -175,11 +173,11 @@ function set_bash_prompt () {
   UPC="\u@\h"
   if is_font_installed; then
     PS1="${BK_GREEN}$WHITE$UPC${GREEN}${SEGMENT_SEPARATOR}"
-    WD="$WHITE $BK_BLUE \\w${COLOR_NONE}${BLUE}${SEGMENT_SEPARATOR}${WHITE}"
-	PS1+="${WHITE} ${BRANCH} ${WD} $PS_SYMBOL ${PROMPT_SYMBOL} "
+    WD="$WHITE$BK_BLUE\\w${COLOR_NONE}${BLUE}${SEGMENT_SEPARATOR}${WHITE}"
+	PS1+="${WHITE}${BRANCH}${WD}$PS_SYMBOL${PROMPT_SYMBOL} "
   else
-    WD="$WHITE\\w$${COLOR_NONE}${WHITE}"
-    PS1="$UPC ${WHITE} ${BRANCH} ${WD} ${PROMPT_SYMBOL} "
+    WD="$BLUE\\w${COLOR_NONE}${WHITE}"
+    PS1="$CYAN$UPC${WHITE}${BRANCH}${WD}${PROMPT_SYMBOL} "
   fi	
 }
  
