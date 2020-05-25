@@ -25,3 +25,4 @@ for f in $_ENV_FILES;
 do
 	source "${f}"
 done
+cat /opt/profiles/awesome.txt
